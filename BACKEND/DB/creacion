@@ -1,0 +1,162 @@
+/* 1. LIMPIEZA DE OBJETOS */
+DROP TABLE IF EXISTS dbo_bitacora_master;
+DROP TABLE IF EXISTS dbo_comprobante_pago_master;
+DROP TABLE IF EXISTS plan_modulo;
+DROP TABLE IF EXISTS modulo;
+DROP TABLE IF EXISTS cliente_suscripcion;
+DROP TABLE IF EXISTS `plan`;
+DROP TABLE IF EXISTS usuario_plataforma;
+DROP TABLE IF EXISTS cliente;
+DROP TABLE IF EXISTS estado_suscripcion;
+DROP TABLE IF EXISTS estado_cliente;
+DROP TABLE IF EXISTS Persona;
+DROP TABLE IF EXISTS Mascota;
+DROP TABLE IF EXISTS juego_recreativo;
+
+
+/* 2. TABLA CATALOGO: ESTADO_CLIENTE */
+CREATE TABLE estado_cliente (
+    id INT NOT NULL,
+    codigo VARCHAR(30) NOT NULL,
+    descripcion VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY UQ_EstadoCliente_Codigo (codigo)
+) ENGINE=InnoDB;
+
+/* 3. TABLA CATALOGO: ESTADO_SUSCRIPCION */
+CREATE TABLE estado_suscripcion (
+    id INT NOT NULL,
+    codigo VARCHAR(30) NOT NULL,
+    descripcion VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY UQ_EstadoSuscripcion_Codigo (codigo)
+) ENGINE=InnoDB;
+
+/* 4. TABLA CLIENTE */
+CREATE TABLE cliente (
+    id INT AUTO_INCREMENT NOT NULL,
+    ruc CHAR(11) NOT NULL,
+    codigo VARCHAR(30) NOT NULL,
+    razon_social VARCHAR(200) NOT NULL,
+    nombre_comercial VARCHAR(200) NOT NULL,
+    direccion VARCHAR(250) NULL,
+    telefono VARCHAR(30) NULL,
+    correo_contacto VARCHAR(120) NULL,
+    servidor_sql VARCHAR(120) NOT NULL,
+    bd_nombre VARCHAR(120) NOT NULL,
+    bd_usuario VARCHAR(120) NULL,
+    bd_password_cifrada VARCHAR(400) NULL,
+    id_estado INT NOT NULL DEFAULT 1,
+    fecha_activacion DATE NULL,
+    fecha_creacion DATETIME NOT NULL DEFAULT (UTC_TIMESTAMP()),
+    fecha_modificacion DATETIME NULL,
+    usuario_creacion VARCHAR(100) NOT NULL,
+    usuario_modificacion VARCHAR(100) NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY UQ_Cliente_Ruc (ruc),
+    UNIQUE KEY UQ_Cliente_Codigo (codigo),
+    UNIQUE KEY UQ_Cliente_BdNombre (bd_nombre),
+    CONSTRAINT FK_Cliente_EstadoCliente FOREIGN KEY (id_estado) REFERENCES estado_cliente (id)
+) ENGINE=InnoDB;
+
+/* 6. TABLA USUARIO_PLATAFORMA */
+CREATE TABLE usuario_plataforma (
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    nombres VARCHAR(120) NOT NULL,
+    apellidos VARCHAR(120) NOT NULL,
+    correo VARCHAR(150) NOT NULL,
+    clave_cifrada VARCHAR(500) NOT NULL,
+    intentos_fallidos INT NOT NULL DEFAULT 0,
+    bloqueado_hasta DATETIME NULL,
+    ultimo_acceso DATETIME NULL,
+    estado TINYINT(1) NOT NULL DEFAULT 1,
+    fecha_creacion DATETIME NOT NULL DEFAULT (UTC_TIMESTAMP()),
+    fecha_modificacion DATETIME NULL,
+    usuario_creacion VARCHAR(100) NOT NULL,
+    usuario_modificacion VARCHAR(100) NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY UQ_UsuarioPlataforma_Correo (correo)
+) ENGINE=InnoDB;
+
+/* 7. TABLA PLAN */
+CREATE TABLE `plan` (
+    id INT AUTO_INCREMENT NOT NULL,
+    codigo VARCHAR(30) NOT NULL,
+    nombre VARCHAR(120) NOT NULL,
+    precio_mensual DECIMAL(12,2) NOT NULL,
+    precio_anual DECIMAL(12,2) NOT NULL,
+    max_estudiante INT NULL,
+    max_usuario INT NULL,
+    estado TINYINT(1) NOT NULL DEFAULT 1,
+    fecha_creacion DATETIME NOT NULL DEFAULT (UTC_TIMESTAMP()),
+    fecha_modificacion DATETIME NULL,
+    usuario_creacion VARCHAR(100) NOT NULL,
+    usuario_modificacion VARCHAR(100) NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY UQ_Plan_Codigo (codigo),
+    CONSTRAINT CK_Plan_Precios CHECK (precio_mensual >= 0 AND precio_anual >= 0)
+) ENGINE=InnoDB;
+
+/* 8. TABLA CLIENTESUSCRIPCION */
+CREATE TABLE cliente_suscripcion (
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    id_cliente INT NOT NULL,
+    id_plan INT NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NULL,
+    modalidad VARCHAR(20) NOT NULL,
+    monto_pactado DECIMAL(12,2) NOT NULL,
+    id_estado INT NOT NULL DEFAULT 1,
+    fecha_creacion DATETIME NOT NULL DEFAULT (UTC_TIMESTAMP()),
+    fecha_modificacion DATETIME NULL,
+    usuario_creacion VARCHAR(100) NOT NULL,
+    usuario_modificacion VARCHAR(100) NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT FK_ClienteSuscripcion_Cliente FOREIGN KEY (id_cliente) REFERENCES cliente (id),
+    CONSTRAINT FK_ClienteSuscripcion_Plan FOREIGN KEY (id_plan) REFERENCES `plan` (id),
+    CONSTRAINT FK_ClienteSuscripcion_EstadoSuscripcion FOREIGN KEY (id_estado) REFERENCES estado_suscripcion (id),
+    CONSTRAINT CK_ClienteSuscripcion_Modalidad CHECK (modalidad IN ('MENSUAL', 'ANUAL')),
+    CONSTRAINT CK_ClienteSuscripcion_Monto CHECK (monto_pactado >= 0)
+) ENGINE=InnoDB;
+
+/* 9. TABLA PERSONA */
+CREATE TABLE Persona (
+    id INT AUTO_INCREMENT NOT NULL,
+    tipo_documento VARCHAR(50) NULL,
+    numero_documento VARCHAR(50) NULL,
+    nombres VARCHAR(50) NULL,
+    apellido_paterno VARCHAR(50) NULL,
+    apellido_materno VARCHAR(50) NULL,
+    fecha_creacion DATETIME NOT NULL DEFAULT (UTC_TIMESTAMP()),
+    fecha_modificacion DATETIME NULL,
+    usuario_creacion VARCHAR(100) NOT NULL,
+    usuario_modificacion VARCHAR(100) NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+/* 10. TABLA MASCOTA */
+CREATE TABLE Mascota (
+    id INT AUTO_INCREMENT NOT NULL,
+    categoria_mascota VARCHAR(50) NULL,
+    raza VARCHAR(50) NULL,
+    edad INT NULL,
+    nombre VARCHAR(50) NULL,
+    fecha_creacion DATETIME NOT NULL DEFAULT (UTC_TIMESTAMP()),
+    fecha_modificacion DATETIME NULL,
+    usuario_creacion VARCHAR(100) NOT NULL,
+    usuario_modificacion VARCHAR(100) NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+/* 11. TABLA JUEGO_RECREATIVO */
+CREATE TABLE juego_recreativo (
+    id INT AUTO_INCREMENT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    tipo VARCHAR(50) NULL,
+    estado VARCHAR(50) NULL,
+    fecha_creacion DATETIME NOT NULL DEFAULT (UTC_TIMESTAMP()),
+    fecha_modificacion DATETIME NULL,
+    usuario_creacion VARCHAR(100) NOT NULL,
+    usuario_modificacion VARCHAR(100) NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
