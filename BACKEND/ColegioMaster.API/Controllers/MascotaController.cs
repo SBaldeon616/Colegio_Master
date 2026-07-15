@@ -1,64 +1,131 @@
-﻿using ColegioMaster.DtoModels.Mascota;
+﻿using ColegioMaster.DtoModels.Comp;
+using ColegioMaster.DtoModels.Mascota;
 using ColegioMaster.Negocio.Mascota;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ColegioMaster.API.Controllers
 {
+    /// <summary>
+    /// Administrar mascotas
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MascotaController : ControllerBase
     {
         private readonly IMascotaService _mascotaService;
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="mascotaService"></param>
         public MascotaController(IMascotaService mascotaService)
         {
             _mascotaService = mascotaService;
         }
 
-        // GET: api/Mascota
+        /// <summary>
+        /// Obtiene todas las mascotas.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<List<MascotaDto>>> GetAllMascota()
+        public async Task<ActionResult<GeneralResponse<List<MascotaDto>>>> GetAllMascota()
         {
             List<MascotaDto> mascotas = await _mascotaService.GetAll();
-            return Ok(mascotas);
+            GeneralResponse<List<MascotaDto>> response = new GeneralResponse<List<MascotaDto>>
+            {
+                Content = mascotas,
+                Success = true,
+                Message = "Mascotas obtenidas correctamente"
+            };
+            return Ok(response);
         }
 
-        // GET: api/Mascota/1
+        /// <summary>
+        /// Obtiene una mascota por ID.
+        /// </summary>
+        /// <param name="id">ID es el identificador (hace referencia al primary key) de la mascota</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<MascotaDto>> GetMascotaById(int id)
+        public async Task<ActionResult<GeneralResponse<MascotaDto>>> GetMascotaById(int id)
         {
             MascotaDto mascota = await _mascotaService.GetById(id);
             if (mascota == null)
+            {
                 return NotFound();
-            return Ok(mascota);
+            }
+            GeneralResponse<MascotaDto> response = new GeneralResponse<MascotaDto>
+            {
+                Content = mascota,
+                Success = true,
+                Message = "Mascota obtenida correctamente"
+            };
+            return Ok(response);
         }
 
-        // POST: api/Mascota
+        /// <summary>
+        /// Crea una nueva mascota.
+        /// </summary>
+        /// <param name="mascota">Objeto que contiene la información de la nueva mascota</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<MascotaDto>> CreateMascota([FromBody] MascotaCrearDto mascota)
+        public async Task<ActionResult<GeneralResponse<MascotaDto>>> CreateMascota([FromBody] MascotaCrearDto mascota)
         {
             MascotaDto nuevaMascota = await _mascotaService.Create(mascota);
-            return Ok(nuevaMascota);
+            GeneralResponse<MascotaDto> response = new GeneralResponse<MascotaDto>
+            {
+                Content = nuevaMascota,
+                Success = true,
+                Message = "Mascota creada correctamente"
+            };
+            return Ok(response);
         }
 
-        // PUT: api/Mascota/1
+        /// <summary>
+        /// Actualiza una mascota por ID.
+        /// </summary>
+        /// <param name="id">ID es el identificador (hace referencia al primary key) de la mascota</param>
+        /// <param name="mascota">Objeto que contiene la información actualizada de la mascota</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<ActionResult<MascotaDto>> UpdateMascota(int id, [FromBody] MascotaActualizarDto mascota)
+        public async Task<ActionResult<GeneralResponse<MascotaDto>>> UpdateMascota(int id, [FromBody] MascotaActualizarDto mascota)
         {
             MascotaDto updatedMascota = await _mascotaService.Update(id, mascota);
             if (updatedMascota == null)
+            {
                 return NotFound();
-            return Ok(updatedMascota);
+            }
+            GeneralResponse<MascotaDto> response = new GeneralResponse<MascotaDto>
+            {
+                Content = updatedMascota,
+                Success = true,
+                Message = "Mascota actualizada correctamente"
+            };
+            return Ok(response);
         }
 
-        // DELETE: api/Mascota/1
+        /// <summary>
+        /// Elimina una mascota por ID.
+        /// </summary>
+        /// <param name="id">ID es el identificador (hace referencia al primary key) de la mascota</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> DeleteMascota(int id)
+        public async Task<ActionResult<GeneralResponse<bool>>> DeleteMascota(int id)
         {
             bool result = await _mascotaService.Delete(id);
             if (!result)
+            {
                 return NotFound();
-            return Ok(result);
+            }
+            GeneralResponse<bool> response = new GeneralResponse<bool>
+            {
+                Content = result,
+                Success = true,
+                Message = "Mascota eliminada correctamente"
+            };
+            return Ok(response);
         }
     }
 }

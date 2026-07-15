@@ -83,8 +83,7 @@ namespace ColegioMaster.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> DeleteEstadoCliente(int id)
         {
-            bool result = await _estadoClienteService.Delete(id, new EstadoClienteDto());
-            if (!result)
+            bool result = await _estadoClienteService.Delete(id); if (!result)
                 return NotFound();
             return Ok(result);
         }

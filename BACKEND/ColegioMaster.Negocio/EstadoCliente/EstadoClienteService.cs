@@ -12,24 +12,24 @@ namespace ColegioMaster.Negocio.EstadoCliente
     {
         private readonly IEstadoClienteRepositorio _repository;
 
-
         public EstadoClienteService(IEstadoClienteRepositorio repository)
         {
             _repository = repository;
         }
+
         public async Task<EstadoClienteDto> Create(EstadoClienteCrearDto request)
         {
             EstadoClienteDto result = await _repository.Create(request);
             return result;
         }
 
-        public async Task<bool> Delete(int id, EstadoClienteDto request)
+        public async Task<bool> Delete(int id)
         {
-            bool result = await _repository.Delete(id, request);
+            bool result = await _repository.Delete(id);
             return result;
         }
 
-        public async void Dispose()
+        public void Dispose()
         {
             GC.SuppressFinalize(this);
         }
@@ -39,6 +39,7 @@ namespace ColegioMaster.Negocio.EstadoCliente
             List<EstadoClienteDto> result = await _repository.GetAll();
             return result;
         }
+
         public async Task<EstadoClienteDto> GetById(int id)
         {
             EstadoClienteDto result = await _repository.GetById(id);
@@ -50,8 +51,5 @@ namespace ColegioMaster.Negocio.EstadoCliente
             EstadoClienteDto result = await _repository.Update(id, request);
             return result;
         }
-
     }
 }
-
-

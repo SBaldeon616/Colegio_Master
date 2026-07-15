@@ -13,7 +13,7 @@ namespace ColegioMaster.Repositorio.Implement
         public Task<EstadoClienteDto> GetById(int id);
         public Task<EstadoClienteDto> Create(EstadoClienteCrearDto request);
         public Task<EstadoClienteDto> Update(int id, EstadoClienteActualizarDto request);
-        public Task<bool> Delete(int id, EstadoClienteDto request);
+        public Task<bool> Delete(int id);
     }
 }
 

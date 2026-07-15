@@ -11,6 +11,6 @@ namespace ColegioMaster.Negocio.EstadoCliente
         Task<EstadoClienteDto> GetById(int id);
         Task<EstadoClienteDto> Create(EstadoClienteCrearDto request);
         Task<EstadoClienteDto> Update(int id, EstadoClienteActualizarDto request);
-        Task<bool> Delete(int id, EstadoClienteDto request);
+        Task<bool> Delete(int id);
     }
 }

@@ -24,7 +24,7 @@ namespace ColegioMaster.Repositorio.Implement
             });
         }
 
-        public Task<bool> Delete(int id, EstadoClienteDto request)
+        public Task<bool> Delete(int id)
         {
             var entidad = _Db.EstadoCliente.Find(id);
             if (entidad == null)
