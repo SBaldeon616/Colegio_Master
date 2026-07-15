@@ -1,23 +1,26 @@
-﻿using ColegioMaster.DtoModels.EstadoCliente;
+﻿using ColegioMaster.DtoModels.Comp;
+using ColegioMaster.DtoModels.EstadoCliente;
 using ColegioMaster.Negocio.EstadoCliente;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ColegioMaster.API.Controllers
 {
+    /// <summary>
+    /// Administrar estado cliente
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize] /* => si no tienes token valido / no ingresas*/
     public class EstadoClienteController : ControllerBase
     {
-        //AQUI CREAMOS LOS METODOS PARA EL CRUD DE ESTADO CLIENTE
-        //EN BASE A LOS VERBOS DE HTTP, USAREMOS LOS ATRIBUTOS CORRESPONDIENTES PARA CADA METODO
-        //GET : OBTENER TODOS LOS ESTADOS DE CLIENTE
-        //GET/ID : OBTENER UN ESTADO DE CLIENTE POR ID
-        //POST : CREAR UN NUEVO ESTADO DE CLIENTE
-        //PUT/ID : ACTUALIZAR UN ESTADO DE CLIENTE POR ID
-        //DELETE/ID : ELIMINAR UN ESTADO DE CLIENTE POR ID
-
         private readonly IEstadoClienteService _estadoClienteService;
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="estadoClienteService"></param>
         public EstadoClienteController(IEstadoClienteService estadoClienteService)
         {
             _estadoClienteService = estadoClienteService;
@@ -28,10 +31,16 @@ namespace ColegioMaster.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<List<EstadoClienteDto>>> GetAllEstadoCliente()
+        public async Task<ActionResult<GeneralResponse<List<EstadoClienteDto>>>> GetAllEstadoCliente()
         {
-            List<EstadoClienteDto> estadosCliente = await _estadoClienteService.GetAll();
-            return Ok(estadosCliente);
+            List<EstadoClienteDto> estados = await _estadoClienteService.GetAll();
+            GeneralResponse<List<EstadoClienteDto>> response = new GeneralResponse<List<EstadoClienteDto>>
+            {
+                Content = estados,
+                Success = true,
+                Message = "Estados de cliente obtenidos correctamente"
+            };
+            return Ok(response);
         }
 
         /// <summary>
@@ -40,12 +49,20 @@ namespace ColegioMaster.API.Controllers
         /// <param name="id">ID es el identificador (hace referencia al primary key) del estado de cliente</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<EstadoClienteDto>> GetEstadoClienteById(int id)
+        public async Task<ActionResult<GeneralResponse<EstadoClienteDto>>> GetEstadoClienteById(int id)
         {
-            EstadoClienteDto estadoCliente = await _estadoClienteService.GetById(id);
-            if (estadoCliente == null)
+            EstadoClienteDto estado = await _estadoClienteService.GetById(id);
+            if (estado == null)
+            {
                 return NotFound();
-            return Ok(estadoCliente);
+            }
+            GeneralResponse<EstadoClienteDto> response = new GeneralResponse<EstadoClienteDto>
+            {
+                Content = estado,
+                Success = true,
+                Message = "Estado de cliente obtenido correctamente"
+            };
+            return Ok(response);
         }
 
         /// <summary>
@@ -54,10 +71,16 @@ namespace ColegioMaster.API.Controllers
         /// <param name="estadoCliente">Objeto que contiene la información del nuevo estado de cliente</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<EstadoClienteDto>> CreateEstadoCliente([FromBody] EstadoClienteCrearDto estadoCliente)
+        public async Task<ActionResult<GeneralResponse<EstadoClienteDto>>> CreateEstadoCliente([FromBody] EstadoClienteCrearDto estadoCliente)
         {
-            EstadoClienteDto nuevoEstadoCliente = await _estadoClienteService.Create(estadoCliente);
-            return Ok(nuevoEstadoCliente);
+            EstadoClienteDto createdEstado = await _estadoClienteService.Create(estadoCliente);
+            GeneralResponse<EstadoClienteDto> response = new GeneralResponse<EstadoClienteDto>
+            {
+                Content = createdEstado,
+                Success = true,
+                Message = "Estado de cliente creado correctamente"
+            };
+            return Ok(response);
         }
 
         /// <summary>
@@ -67,12 +90,20 @@ namespace ColegioMaster.API.Controllers
         /// <param name="estadoCliente">Objeto que contiene la información actualizada del estado de cliente</param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<ActionResult<EstadoClienteDto>> UpdateEstadoCliente(int id, [FromBody] EstadoClienteActualizarDto estadoCliente)
+        public async Task<ActionResult<GeneralResponse<EstadoClienteDto>>> UpdateEstadoCliente(int id, [FromBody] EstadoClienteActualizarDto estadoCliente)
         {
             EstadoClienteDto updatedEstado = await _estadoClienteService.Update(id, estadoCliente);
             if (updatedEstado == null)
+            {
                 return NotFound();
-            return Ok(updatedEstado);
+            }
+            GeneralResponse<EstadoClienteDto> response = new GeneralResponse<EstadoClienteDto>
+            {
+                Content = updatedEstado,
+                Success = true,
+                Message = "Estado de cliente actualizado correctamente"
+            };
+            return Ok(response);
         }
 
         /// <summary>
@@ -81,11 +112,20 @@ namespace ColegioMaster.API.Controllers
         /// <param name="id">ID es el identificador (hace referencia al primary key) del estado de cliente</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> DeleteEstadoCliente(int id)
+        public async Task<ActionResult<GeneralResponse<bool>>> DeleteEstadoCliente(int id)
         {
-            bool result = await _estadoClienteService.Delete(id); if (!result)
+            bool result = await _estadoClienteService.Delete(id);
+            if (!result)
+            {
                 return NotFound();
-            return Ok(result);
+            }
+            GeneralResponse<bool> response = new GeneralResponse<bool>
+            {
+                Content = result,
+                Success = true,
+                Message = "Estado de cliente eliminado correctamente"
+            };
+            return Ok(response);
         }
     }
 }
