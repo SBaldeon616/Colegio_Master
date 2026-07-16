@@ -1,0 +1,90 @@
+<section class="estado-cliente-page">
+  <header class="encabezado">
+    <h2>Estado Cliente</h2>
+    <p>Gestiona el catalogo de estados de cliente.</p>
+    <p class="nota-id">Nota: <strong>Id</strong> es parte del registro, no es identity/autogenerado y debe capturarse en el formulario.</p>
+  </header>
+
+  <div class="contenedor-grid">
+    <article class="panel formulario-panel">
+      <h3>{{ modoEdicion() ? 'Editar estado' : 'Nuevo estado' }}</h3>
+
+      <form [formGroup]="formulario" (ngSubmit)="GuardarEstadoCliente()" novalidate>
+        <div class="campo">
+          <label for="id">Id</label>
+          <input id="id" type="number" formControlName="id" min="1" />
+          @if (ObtenerErrorId()) {
+            <small class="error">{{ ObtenerErrorId() }}</small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="codigo">Codigo</label>
+          <input id="codigo" type="text" formControlName="codigo" maxlength="50" />
+          @if (ObtenerErrorCodigo()) {
+            <small class="error">{{ ObtenerErrorCodigo() }}</small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="descripcion">Descripcion</label>
+          <textarea id="descripcion" rows="3" formControlName="descripcion" maxlength="200"></textarea>
+          @if (ObtenerErrorDescripcion()) {
+            <small class="error">{{ ObtenerErrorDescripcion() }}</small>
+          }
+        </div>
+
+        <div class="acciones-formulario">
+          <button type="submit" [disabled]="guardando()">
+            {{ modoEdicion() ? 'Actualizar' : 'Guardar' }}
+          </button>
+
+          @if (modoEdicion()) {
+            <button type="button" class="secundario" (click)="CancelarEdicion()">Cancelar</button>
+          }
+        </div>
+      </form>
+    </article>
+
+    <article class="panel tabla-panel">
+      <div class="tabla-header">
+        <h3>Listado</h3>
+        <button type="button" class="secundario" (click)="ListarEstadoCliente()" [disabled]="cargando()">
+          Refrescar
+        </button>
+      </div>
+
+      @if (cargando()) {
+        <p class="estado">Cargando registros...</p>
+      } @else if (!estadosCliente().length) {
+        <p class="estado">No hay estados de cliente registrados.</p>
+      } @else {
+        <div class="tabla-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Codigo</th>
+                <th>Descripcion</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of estadosCliente(); track item.id) {
+                <tr>
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.codigo }}</td>
+                  <td>{{ item.descripcion || '-' }}</td>
+                  <td class="acciones-tabla">
+                    <button type="button" class="secundario" (click)="EditarEstadoCliente(item)">Editar</button>
+                    <button type="button" class="danger" (click)="EliminarEstadoCliente(item.id)">Eliminar</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </article>
+  </div>
+</section>

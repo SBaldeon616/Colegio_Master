@@ -1,0 +1,17 @@
+@use './styles/color-palette' as palette;
+@use './styles/shared-components';
+
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+	--color-azul-900: #{palette.$color-azul-900};
+	--color-azul-700: #{palette.$color-azul-700};
+	--color-azul-500: #{palette.$color-azul-500};
+	--color-azul-300: #{palette.$color-azul-300};
+	--color-negro-950: #{palette.$color-negro-950};
+	--color-negro-900: #{palette.$color-negro-900};
+	--color-negro-800: #{palette.$color-negro-800};
+	--color-blanco: #{palette.$color-blanco};
+	--color-borde: #{palette.$color-borde};
+	--color-sombra: #{palette.$color-sombra};
+}

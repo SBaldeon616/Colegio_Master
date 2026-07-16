@@ -1,0 +1,53 @@
+<div class="container">
+	<div class="form-section">
+		<h2 style="color: var(--color-negro-900); margin-top: 0; margin-bottom: 1rem;">Datos Personales</h2>
+
+		<div class="form-group">
+			<label for="nombre">Nombre:</label>
+			<input id="nombre" [(ngModel)]="nombre" type="text" placeholder="Ingresa el nombre" />
+		</div>
+
+		<div class="form-group">
+			<label>Nombre Actual:</label>
+			<div class="value-display">{{ nombre() || '(sin ingresar)' }}</div>
+		</div>
+	</div>
+
+	<div class="table-section">
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Nombre</th>
+					<th>Edad</th>
+					<th>Fecha Nacimiento</th>
+					<th>Ahorros</th>
+					<th>Categoría</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for (persona of personas; track persona.id) {
+					<tr>
+						<td>{{ persona.id }}</td>
+						<td>{{ persona.nombre }}</td>
+						<td>{{ persona.edad }}</td>
+						<td>{{ persona.fechaNacimiento | date: 'dd/MM/yyyy' }}</td>
+						<td>{{ persona.ahorros | currency: 'PEN':'symbol':'1.2-2':'es-PE' }}</td>
+						<td>
+							<span [class.categoria-menor]="persona.categoria === 'menor de edad'"
+								[class.categoria-adulto]="persona.categoria === 'adulto'"
+								[class.categoria-mayor]="persona.categoria === 'mayor de edad'">
+								{{ persona.categoria }}
+							</span>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="form-section">
+		<h3 style="color: var(--color-negro-900); margin-top: 0; margin-bottom: 1rem;">Componente Hijo</h3>
+		<app-hijo [cantidad]="personas.length" (personaEmmit)="recibirPersona($event)"></app-hijo>
+	</div>
+</div>
