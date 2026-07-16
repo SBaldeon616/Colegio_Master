@@ -23,7 +23,7 @@ export class TemplateComponent {
   protected readonly menuExpandido = signal<string | null>(null);
 
   protected readonly menuItems: MenuItem[] = [
-    {
+ {
       id: 'mantenimiento',
       label: 'Mantenimiento',
       icon: 'wrench',
@@ -31,7 +31,9 @@ export class TemplateComponent {
         { id: 'padre', label: 'Padre', icon: 'users', route: 'padre' },
         { id: 'hijo', label: 'Hijo', icon: 'shield', route: 'hijo' },
         { id: 'permisos', label: 'Permisos', icon: 'lock', route: 'permisos' },
-        { id: 'estado-cliente', label: 'Estado Cliente', icon: 'lock', route: 'estado-cliente' }
+        { id: 'estado-cliente', label: 'Estado Cliente', icon: 'lock', route: 'estado-cliente' },
+        { id: 'juego-recreativo', label: 'Juego Recreativo', icon: 'lock', route: 'juego-recreativo' },
+        { id: 'mascota', label: 'Mascota', icon: 'lock', route: 'mascota' }
       ]
     },
     {

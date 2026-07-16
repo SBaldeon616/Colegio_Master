@@ -1,0 +1,92 @@
+<section class="juego-recreativo-page">
+  <header class="encabezado">
+    <h2>Juego Recreativo</h2>
+    <p>Gestiona el catalogo de juegos recreativos.</p>
+    <p class="nota-id">Nota: el <strong>Id</strong> es autogenerado por la base de datos, no se captura.</p>
+  </header>
+
+  <div class="contenedor-grid">
+    <article class="panel formulario-panel">
+      <h3>{{ modoEdicion() ? 'Editar juego' : 'Nuevo juego' }}</h3>
+
+      <form [formGroup]="formulario" (ngSubmit)="GuardarJuegoRecreativo()" novalidate>
+        <div class="campo">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" type="text" formControlName="nombre" maxlength="100" />
+          @if (ObtenerErrorNombre()) {
+            <small class="error">{{ ObtenerErrorNombre() }}</small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="tipo">Tipo</label>
+          <input id="tipo" type="text" formControlName="tipo" maxlength="50" />
+          @if (ObtenerErrorTipo()) {
+            <small class="error">{{ ObtenerErrorTipo() }}</small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="estado">Estado</label>
+          <input id="estado" type="text" formControlName="estado" maxlength="50" />
+          @if (ObtenerErrorEstado()) {
+            <small class="error">{{ ObtenerErrorEstado() }}</small>
+          }
+        </div>
+
+        <div class="acciones-formulario">
+          <button type="submit" [disabled]="guardando()">
+            {{ modoEdicion() ? 'Actualizar' : 'Guardar' }}
+          </button>
+
+          @if (modoEdicion()) {
+            <button type="button" class="secundario" (click)="CancelarEdicion()">Cancelar</button>
+          }
+        </div>
+      </form>
+    </article>
+
+    <article class="panel tabla-panel">
+      <div class="tabla-header">
+        <h3>Listado</h3>
+        <button type="button" class="secundario" (click)="ListarJuegoRecreativo()" [disabled]="cargando()">
+          Refrescar
+        </button>
+      </div>
+
+      @if (cargando()) {
+        <p class="estado">Cargando registros...</p>
+      } @else if (!juegos().length) {
+        <p class="estado">No hay juegos recreativos registrados.</p>
+      } @else {
+        <div class="tabla-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of juegos(); track item.id) {
+                <tr>
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.nombre }}</td>
+                  <td>{{ item.tipo || '-' }}</td>
+                  <td>{{ item.estado || '-' }}</td>
+                  <td class="acciones-tabla">
+                    <button type="button" class="secundario" (click)="EditarJuegoRecreativo(item)">Editar</button>
+                    <button type="button" class="danger" (click)="EliminarJuegoRecreativo(item.id)">Eliminar</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </article>
+  </div>
+</section>

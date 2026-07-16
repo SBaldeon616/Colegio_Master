@@ -1,0 +1,102 @@
+<section class="mascota-page">
+  <header class="encabezado">
+    <h2>Mascota</h2>
+    <p>Gestiona el registro de mascotas.</p>
+    <p class="nota-id">Nota: el <strong>Id</strong> es autogenerado por la base de datos, no se captura.</p>
+  </header>
+
+  <div class="contenedor-grid">
+    <article class="panel formulario-panel">
+      <h3>{{ modoEdicion() ? 'Editar mascota' : 'Nueva mascota' }}</h3>
+
+      <form [formGroup]="formulario" (ngSubmit)="GuardarMascota()" novalidate>
+        <div class="campo">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" type="text" formControlName="nombre" maxlength="50" />
+          @if (ObtenerErrorNombre()) {
+            <small class="error">{{ ObtenerErrorNombre() }}</small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="categoriaMascota">Categoria</label>
+          <input id="categoriaMascota" type="text" formControlName="categoriaMascota" maxlength="50" />
+          @if (ObtenerErrorCategoria()) {
+            <small class="error">{{ ObtenerErrorCategoria() }}</small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="raza">Raza</label>
+          <input id="raza" type="text" formControlName="raza" maxlength="50" />
+          @if (ObtenerErrorRaza()) {
+            <small class="error">{{ ObtenerErrorRaza() }}</small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="edad">Edad</label>
+          <input id="edad" type="number" formControlName="edad" min="0" max="100" />
+          @if (ObtenerErrorEdad()) {
+            <small class="error">{{ ObtenerErrorEdad() }}</small>
+          }
+        </div>
+
+        <div class="acciones-formulario">
+          <button type="submit" [disabled]="guardando()">
+            {{ modoEdicion() ? 'Actualizar' : 'Guardar' }}
+          </button>
+
+          @if (modoEdicion()) {
+            <button type="button" class="secundario" (click)="CancelarEdicion()">Cancelar</button>
+          }
+        </div>
+      </form>
+    </article>
+
+    <article class="panel tabla-panel">
+      <div class="tabla-header">
+        <h3>Listado</h3>
+        <button type="button" class="secundario" (click)="ListarMascota()" [disabled]="cargando()">
+          Refrescar
+        </button>
+      </div>
+
+      @if (cargando()) {
+        <p class="estado">Cargando registros...</p>
+      } @else if (!mascotas().length) {
+        <p class="estado">No hay mascotas registradas.</p>
+      } @else {
+        <div class="tabla-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Categoria</th>
+                <th>Raza</th>
+                <th>Edad</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of mascotas(); track item.id) {
+                <tr>
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.nombre || '-' }}</td>
+                  <td>{{ item.categoriaMascota || '-' }}</td>
+                  <td>{{ item.raza || '-' }}</td>
+                  <td>{{ item.edad ?? '-' }}</td>
+                  <td class="acciones-tabla">
+                    <button type="button" class="secundario" (click)="EditarMascota(item)">Editar</button>
+                    <button type="button" class="danger" (click)="EliminarMascota(item.id)">Eliminar</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </article>
+  </div>
+</section>

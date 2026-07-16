@@ -10,7 +10,8 @@ export const routes: Routes = [
     children: [
       { path: 'padre', loadComponent: () => import('./views/padre/padre').then(m => m.Padre) },
       { path: 'hijo', loadComponent: () => import('./views/hijo/hijo').then(m => m.Hijo) },
-      { path: 'estado-cliente', loadComponent: () => import('./views/template/mantenimiento/estado-cliente/estado-cliente.component').then(m => m.EstadoClienteComponent)  }
-    ]
+      { path: 'estado-cliente', loadComponent: () => import('./views/template/mantenimiento/estado-cliente/estado-cliente.component').then(m => m.EstadoClienteComponent)  },
+{ path: 'juego-recreativo', loadComponent: () => import('./views/template/mantenimiento/juego-recreativo/juego-recreativo.component').then(m => m.JuegoRecreativoComponent)  },
+      { path: 'mascota', loadComponent: () => import('./views/template/mantenimiento/mascota/mascota.component').then(m => m.MascotaComponent)  }    ]
   }
 ];
